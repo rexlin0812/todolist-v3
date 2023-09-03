@@ -1,9 +1,36 @@
+<script>
+import { ref } from "vue";
+import Todolist from "./components/Todolist.vue";
+import { apiGetTodolistRequest } from "@/api";
+
+export default {
+  components: {
+    Todolist,
+  },
+  setup() {
+    const tableData = ref([]);
+
+    (async () => {
+      const { status, data } = await apiGetTodolistRequest();
+      if (status) {
+        tableData.value = data.data.map((item, index) => {
+          return {
+            ...item,
+            id: index,
+            name: "user" + index,
+          };
+        });
+      }
+    })();
+
+    console.log(tableData);
+    return { tableData };
+  },
+};
+</script>
+
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <Todolist :tableData="tableData" />
 </template>
 
 <style lang="scss">
